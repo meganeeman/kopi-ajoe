@@ -1,29 +1,35 @@
 {
   "expo": {
-    "name": "KopiKelilingApp",
-    "slug": "KopiKelilingApp",
+    "name": "Kopi Ajoe",
+    "slug": "kopi-ajoe",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFF8F0"
     },
-    "ios": {
-      "supportsTablet": true
+    "updates": {
+      "url": "https://u.expo.dev/4df57485-ded8-4ca0-a4c4-7180c5788ffc",
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#FFF8F0"
       },
-      "edgeToEdgeEnabled": true
+      "package": "com.kopiajoe.app"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "extra": {
+      "eas": {
+        "projectId": "4df57485-ded8-4ca0-a4c4-7180c5788ffc"
+      }
+    },
+    "ios": {}
   }
 }
