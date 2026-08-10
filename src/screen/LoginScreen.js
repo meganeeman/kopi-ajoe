@@ -29,7 +29,6 @@ export default function LoginScreen({ onLoginSuccess, onNavigateToRegister }) {
 
         setLoading(true);
         try {
-            
             const { data: userData, error: userErr } = await supabase
                 .from('users')
                 .select('*')
@@ -42,14 +41,17 @@ export default function LoginScreen({ onLoginSuccess, onNavigateToRegister }) {
                 return;
             }
 
-            
             if (userData.password !== passClean) {
                 Alert.alert('Gagal Login', 'Password yang kamu masukkan salah.');
                 setLoading(false);
                 return;
             }
 
-            
+            await supabase.auth.signInWithPassword({
+                email: userData.email,
+                password: passClean,
+            });
+
             onLoginSuccess(userData);
         } catch (err) {
             console.log('Exception Catch:', err);

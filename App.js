@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+import * as Updates from 'expo-updates';
 import { supabase } from './supabase';
 import LoginScreen from './src/screen/LoginScreen';
 import RegisterScreen from './src/screen/RegisterScreen';
@@ -11,6 +12,8 @@ export default function App() {
   const [isRegistering, setIsRegistering] = useState(false);
 
   useEffect(() => {
+    onFetchUpdateAsync();
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         fetchUserProfile(session.user);
@@ -32,6 +35,29 @@ export default function App() {
       authListener?.subscription?.unsubscribe();
     };
   }, []);
+
+  const onFetchUpdateAsync = async () => {
+    try {
+      const update = await Updates.checkForUpdateAsync();
+      if (update.isAvailable) {
+        await Updates.fetchUpdateAsync();
+        Alert.alert(
+          'Update Tersedia!',
+          'Aplikasi berhasil diperbarui. Memuat ulang aplikasi...',
+          [
+            {
+              text: 'OK',
+              onPress: async () => {
+                await Updates.reloadAsync();
+              },
+            },
+          ]
+        );
+      }
+    } catch (error) {
+      console.log('Update Error:', error);
+    }
+  };
 
   const fetchUserProfile = async (authUser) => {
     try {
@@ -57,7 +83,7 @@ export default function App() {
     setLoading(true);
     await supabase.auth.signOut();
     setUserSession(null);
-    setIsRegistering(false); 
+    setIsRegistering(false);
     setLoading(false);
   };
 
