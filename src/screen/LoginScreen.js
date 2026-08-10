@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     StyleSheet,
     Text,
@@ -9,14 +9,57 @@ import {
     KeyboardAvoidingView,
     Platform,
     ScrollView,
-    StatusBar
+    StatusBar,
+    Animated
 } from 'react-native';
+import * as Updates from 'expo-updates';
 import { supabase } from '../../supabase';
+import { COLORS } from '../constants/theme';
 
 export default function LoginScreen({ onLoginSuccess, onNavigateToRegister }) {
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const [toastMessage, setToastMessage] = useState('');
+    const slideAnim = useRef(new Animated.Value(-100)).current;
+
+    useEffect(() => {
+        checkUpdateOnLogin();
+    }, []);
+
+    const showToast = (message) => {
+        setToastMessage(message);
+        Animated.sequence([
+            Animated.timing(slideAnim, {
+                toValue: 50,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+            Animated.delay(3000),
+            Animated.timing(slideAnim, {
+                toValue: -100,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    };
+
+    const checkUpdateOnLogin = async () => {
+        try {
+            const update = await Updates.checkForUpdateAsync();
+            if (update.isAvailable) {
+                showToast('Update baru ditemukan, mengunduh...');
+                await Updates.fetchUpdateAsync();
+                showToast('Aplikasi berhasil diperbarui!');
+                setTimeout(async () => {
+                    await Updates.reloadAsync();
+                }, 1200);
+            }
+        } catch (error) {
+            console.log('Update Error on Login:', error);
+        }
+    };
 
     const handleLogin = async () => {
         const inputClean = identifier ? identifier.trim().toLowerCase() : '';
@@ -66,7 +109,12 @@ export default function LoginScreen({ onLoginSuccess, onNavigateToRegister }) {
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-            <StatusBar barStyle="dark-content" backgroundColor="#FFF8F0" />
+            <StatusBar barStyle="dark-content" backgroundColor={COLORS.card} />
+
+            <Animated.View style={[styles.toastContainer, { transform: [{ translateY: slideAnim }] }]}>
+                <Text style={styles.toastText}>{toastMessage}</Text>
+            </Animated.View>
+
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 keyboardShouldPersistTaps="handled"
@@ -80,7 +128,7 @@ export default function LoginScreen({ onLoginSuccess, onNavigateToRegister }) {
                         <TextInput
                             style={styles.input}
                             placeholder="Username, Email, atau No HP"
-                            placeholderTextColor="#A89284"
+                            placeholderTextColor={COLORS.textPlaceholder}
                             value={identifier}
                             onChangeText={setIdentifier}
                             autoCapitalize="none"
@@ -91,7 +139,7 @@ export default function LoginScreen({ onLoginSuccess, onNavigateToRegister }) {
                         <TextInput
                             style={styles.input}
                             placeholder="Password"
-                            placeholderTextColor="#A89284"
+                            placeholderTextColor={COLORS.textPlaceholder}
                             secureTextEntry
                             value={password}
                             onChangeText={setPassword}
@@ -124,7 +172,31 @@ export default function LoginScreen({ onLoginSuccess, onNavigateToRegister }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFF8F0',
+        backgroundColor: COLORS.background,
+    },
+    toastContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 20,
+        right: 20,
+        backgroundColor: COLORS.toastBg,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        zIndex: 9999,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+    },
+    toastText: {
+        color: COLORS.toastText,
+        fontSize: 13,
+        fontWeight: '700',
+        textAlign: 'center',
     },
     scrollContent: {
         flexGrow: 1,
@@ -135,29 +207,29 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 30,
+        backgroundColor: COLORS.card,
+        borderRadius: 24,
         paddingHorizontal: 24,
         paddingVertical: 32,
         alignItems: 'center',
-        elevation: 6,
-        shadowColor: '#4A2E19',
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.1,
-        shadowRadius: 12,
+        elevation: 4,
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
     },
     title: {
         fontSize: 28,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 6,
         textAlign: 'center',
     },
     subtitle: {
         fontSize: 13,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         marginBottom: 24,
         textAlign: 'center',
     },
@@ -168,29 +240,29 @@ const styles = StyleSheet.create({
     input: {
         width: '100%',
         height: 52,
-        backgroundColor: '#FAF5EF',
-        borderRadius: 16,
+        backgroundColor: COLORS.inputBg,
+        borderRadius: 14,
         paddingHorizontal: 18,
         fontSize: 14,
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
     },
     button: {
         width: '100%',
         height: 52,
-        backgroundColor: '#4A2E19',
-        borderRadius: 16,
+        backgroundColor: COLORS.primary,
+        borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
-        elevation: 3,
+        elevation: 2,
     },
     buttonDisabled: {
-        backgroundColor: '#8C705F',
+        backgroundColor: COLORS.primaryDisabled,
     },
     buttonText: {
-        color: '#FFF8F0',
+        color: COLORS.textLight,
         fontSize: 15,
         fontWeight: '800',
     },
@@ -201,10 +273,10 @@ const styles = StyleSheet.create({
     },
     footerText: {
         fontSize: 12,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
     },
     registerLink: {
-        color: '#4A2E19',
+        color: COLORS.primary,
         fontWeight: '800',
         fontSize: 12,
     },

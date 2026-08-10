@@ -15,6 +15,7 @@ import { supabase } from '../../supabase';
 import BottomNav from '../components/BottomNav';
 import ProfileScreen from './ProfileScreen';
 import OrderScreen from './OrderScreen';
+import { COLORS } from '../constants/theme';
 
 export default function HomeScreen({ userSession, onLogout }) {
     const [activeTab, setActiveTab] = useState('home');
@@ -113,6 +114,7 @@ export default function HomeScreen({ userSession, onLogout }) {
 
     return (
         <SafeAreaView style={styles.safeAreaView}>
+            <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
             <View style={styles.dashboardContainer}>
                 {activeTab === 'profile' && (
                     <ProfileScreen userSession={userSession} onLogout={onLogout} />
@@ -235,12 +237,12 @@ export default function HomeScreen({ userSession, onLogout }) {
 const styles = StyleSheet.create({
     safeAreaView: {
         flex: 1,
-        backgroundColor: '#FFF8F0',
+        backgroundColor: COLORS.background,
         paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 24) + 12 : 12,
     },
     dashboardContainer: {
         flex: 1,
-        backgroundColor: '#FFF8F0',
+        backgroundColor: COLORS.background,
     },
     scrollContent: {
         paddingHorizontal: 20,
@@ -259,13 +261,13 @@ const styles = StyleSheet.create({
     },
     greetingText: {
         fontSize: 14,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         fontWeight: '600',
     },
     userNameText: {
         fontSize: 20,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
     },
     profileBadge: {
         backgroundColor: '#FFF0F0',
@@ -281,15 +283,15 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     },
     loyaltyCard: {
-        backgroundColor: '#4A2E19',
+        backgroundColor: COLORS.primary,
         borderRadius: 24,
         padding: 20,
         marginBottom: 16,
-        shadowColor: '#4A2E19',
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.15,
-        shadowRadius: 10,
         elevation: 4,
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
     },
     loyaltyHeader: {
         flexDirection: 'row',
@@ -300,26 +302,26 @@ const styles = StyleSheet.create({
     starCount: {
         fontSize: 26,
         fontWeight: '800',
-        color: '#D4A373',
+        color: COLORS.textLight,
     },
     starUnit: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#FFF8F0',
+        color: COLORS.textLight,
     },
     starSubtitle: {
         fontSize: 12,
-        color: '#EFE5DA',
+        color: '#CCCCCC',
         marginTop: 2,
     },
     scanButton: {
-        backgroundColor: '#D4A373',
+        backgroundColor: COLORS.card,
         paddingHorizontal: 16,
         paddingVertical: 10,
         borderRadius: 14,
     },
     scanButtonText: {
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         fontWeight: '800',
         fontSize: 13,
     },
@@ -332,7 +334,7 @@ const styles = StyleSheet.create({
     },
     progressBar: {
         height: '100%',
-        backgroundColor: '#D4A373',
+        backgroundColor: COLORS.textLight,
         borderRadius: 4,
     },
     progressLabels: {
@@ -341,33 +343,33 @@ const styles = StyleSheet.create({
     },
     progressText: {
         fontSize: 11,
-        color: '#EFE5DA',
+        color: '#CCCCCC',
         fontWeight: '500',
     },
     promoBanner: {
-        backgroundColor: '#FAF5EF',
+        backgroundColor: COLORS.card,
         borderRadius: 20,
         padding: 18,
-        borderWidth: 1.5,
-        borderColor: '#EFE5DA',
+        borderWidth: 1,
+        borderColor: COLORS.border,
         marginBottom: 20,
     },
     promoTag: {
         fontSize: 11,
         fontWeight: '800',
-        color: '#D4A373',
+        color: COLORS.textPrimary,
         letterSpacing: 1,
         marginBottom: 4,
     },
     promoTitle: {
         fontSize: 16,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 4,
     },
     promoSubtitle: {
         fontSize: 12,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
     },
     sectionHeader: {
         flexDirection: 'row',
@@ -378,45 +380,43 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 18,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
     },
     seeAllText: {
         fontSize: 13,
         fontWeight: '700',
-        color: '#D4A373',
+        color: COLORS.textPrimary,
     },
     drinksScrollView: {
         marginLeft: -4,
     },
     drinkCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 20,
         padding: 12,
         marginRight: 14,
         width: 140,
         elevation: 3,
-        shadowColor: '#4A2E19',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
+        borderWidth: 1,
+        borderColor: COLORS.border,
     },
     drinkImage: {
         width: '100%',
         height: 100,
         borderRadius: 14,
-        backgroundColor: '#FAF5EF',
+        backgroundColor: COLORS.inputBg,
         marginBottom: 10,
     },
     drinkName: {
         fontSize: 13,
         fontWeight: '700',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 2,
     },
     drinkPrice: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#8C705F',
+        color: COLORS.textSecondary,
     },
     modalOverlay: {
         flex: 1,
@@ -427,11 +427,13 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         width: '100%',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 24,
         padding: 24,
         alignItems: 'center',
         elevation: 10,
+        borderWidth: 1,
+        borderColor: COLORS.border,
     },
     modalImage: {
         width: 120,
@@ -439,42 +441,42 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     categoryBadge: {
-        backgroundColor: '#FAF5EF',
+        backgroundColor: COLORS.inputBg,
         paddingHorizontal: 10,
         paddingVertical: 3,
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
         marginBottom: 8,
     },
     categoryBadgeText: {
         fontSize: 10,
         fontWeight: '800',
-        color: '#D4A373',
+        color: COLORS.textPrimary,
         letterSpacing: 0.5,
     },
     modalTitle: {
         fontSize: 18,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 2,
         textAlign: 'center',
     },
     modalPrice: {
         fontSize: 15,
         fontWeight: '800',
-        color: '#D4A373',
+        color: COLORS.textPrimary,
         marginBottom: 12,
     },
     modalDescription: {
         fontSize: 13,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         textAlign: 'center',
         lineHeight: 18,
         marginBottom: 20,
     },
     checkStockButton: {
-        backgroundColor: '#4A2E19',
+        backgroundColor: COLORS.primary,
         width: '100%',
         paddingVertical: 14,
         borderRadius: 16,
@@ -482,7 +484,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     checkStockText: {
-        color: '#FFF8F0',
+        color: COLORS.textLight,
         fontWeight: '800',
         fontSize: 13,
     },
@@ -490,7 +492,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     closeText: {
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         fontSize: 13,
         fontWeight: '700',
     },

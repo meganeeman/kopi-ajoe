@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     StyleSheet,
     Text,
@@ -7,9 +7,11 @@ import {
     TouchableOpacity,
     Alert,
     ActivityIndicator,
-    Keyboard
+    Keyboard,
+    Animated
 } from 'react-native';
 import { supabase } from '../../supabase';
+import { COLORS } from '../constants/theme';
 
 export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
     const [screenStep, setScreenStep] = useState('signup');
@@ -20,6 +22,26 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
     const [password, setPassword] = useState('');
     const [otpToken, setOtpToken] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const [toastMessage, setToastMessage] = useState('');
+    const slideAnim = useRef(new Animated.Value(-100)).current;
+
+    const showToast = (message) => {
+        setToastMessage(message);
+        Animated.sequence([
+            Animated.timing(slideAnim, {
+                toValue: 20,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+            Animated.delay(4000),
+            Animated.timing(slideAnim, {
+                toValue: -100,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    };
 
     const handleSignUp = async () => {
         Keyboard.dismiss();
@@ -49,7 +71,6 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
         setLoading(true);
 
         try {
-            
             const { data: existingUsers } = await supabase
                 .from('users')
                 .select('id')
@@ -61,7 +82,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                 return;
             }
 
-            Alert.alert('Mode Demo', 'Kode OTP pendaftaran kamu adalah: 123456');
+            showToast('Untuk demo silahkan masukan 123456 sebagai kode OTP');
             setScreenStep('otp');
         } catch (err) {
             Alert.alert('Gagal Daftar', err.message || 'Terjadi kesalahan.');
@@ -92,7 +113,6 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
         setLoading(true);
 
         try {
-            
             const { data: newUser, error: createError } = await supabase
                 .from('users')
                 .insert([
@@ -122,6 +142,10 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
 
     return (
         <View style={styles.card}>
+            <Animated.View style={[styles.toastContainer, { transform: [{ translateY: slideAnim }] }]}>
+                <Text style={styles.toastText}>{toastMessage}</Text>
+            </Animated.View>
+
             <Text style={styles.brandTitle}>Kopi Ajoe</Text>
 
             {screenStep === 'signup' ? (
@@ -131,7 +155,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                     <TextInput
                         style={styles.input}
                         placeholder="Nama Lengkap"
-                        placeholderTextColor="#A08A75"
+                        placeholderTextColor={COLORS.textPlaceholder}
                         value={name}
                         onChangeText={setName}
                     />
@@ -139,7 +163,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                     <TextInput
                         style={styles.input}
                         placeholder="Username (Contoh: kopilover)"
-                        placeholderTextColor="#A08A75"
+                        placeholderTextColor={COLORS.textPlaceholder}
                         autoCapitalize="none"
                         value={username}
                         onChangeText={setUsername}
@@ -148,7 +172,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                     <TextInput
                         style={styles.input}
                         placeholder="Alamat Email"
-                        placeholderTextColor="#A08A75"
+                        placeholderTextColor={COLORS.textPlaceholder}
                         keyboardType="email-address"
                         autoCapitalize="none"
                         value={email}
@@ -158,7 +182,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                     <TextInput
                         style={styles.input}
                         placeholder="Nomor HP (Contoh: 08123456789)"
-                        placeholderTextColor="#A08A75"
+                        placeholderTextColor={COLORS.textPlaceholder}
                         keyboardType="phone-pad"
                         value={phoneNumber}
                         onChangeText={setPhoneNumber}
@@ -167,7 +191,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                     <TextInput
                         style={styles.input}
                         placeholder="Password (Min. 8 char, Kapital, Simbol)"
-                        placeholderTextColor="#A08A75"
+                        placeholderTextColor={COLORS.textPlaceholder}
                         autoCapitalize="none"
                         secureTextEntry
                         value={password}
@@ -175,7 +199,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                     />
 
                     <TouchableOpacity style={styles.submitButton} activeOpacity={0.85} onPress={handleSignUp} disabled={loading}>
-                        {loading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.submitText}>Kirim OTP Pendaftaran</Text>}
+                        {loading ? <ActivityIndicator color={COLORS.textLight} /> : <Text style={styles.submitText}>Kirim OTP Pendaftaran</Text>}
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.linkButton} onPress={goToLogin}>
@@ -189,7 +213,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                     <TextInput
                         style={[styles.input, styles.otpInput]}
                         placeholder="KODE OTP 6 ANGKA"
-                        placeholderTextColor="#A08A75"
+                        placeholderTextColor={COLORS.textPlaceholder}
                         keyboardType="number-pad"
                         maxLength={6}
                         value={otpToken}
@@ -197,7 +221,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                     />
 
                     <TouchableOpacity style={styles.submitButton} activeOpacity={0.85} onPress={handleVerifyOTP} disabled={loading}>
-                        {loading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.submitText}>Verifikasi & Buat Akun</Text>}
+                        {loading ? <ActivityIndicator color={COLORS.textLight} /> : <Text style={styles.submitText}>Verifikasi & Buat Akun</Text>}
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.linkButton} onPress={() => setScreenStep('signup')} disabled={loading}>
@@ -211,39 +235,65 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 28,
         padding: 28,
         elevation: 6,
-        shadowColor: '#4A2E19',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.08,
         shadowRadius: 16,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+    },
+    toastContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 20,
+        right: 20,
+        backgroundColor: COLORS.toastBg,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        zIndex: 9999,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+    },
+    toastText: {
+        color: COLORS.toastText,
+        fontSize: 12,
+        fontWeight: '700',
+        textAlign: 'center',
     },
     brandTitle: {
         fontSize: 28,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         textAlign: 'center',
         letterSpacing: -0.5,
         marginBottom: 6,
     },
     subtitle: {
         fontSize: 14,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         textAlign: 'center',
         lineHeight: 20,
         marginBottom: 24,
     },
     input: {
-        backgroundColor: '#FAF5EF',
+        backgroundColor: COLORS.inputBg,
         borderWidth: 1.5,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
         borderRadius: 16,
         paddingHorizontal: 16,
         paddingVertical: 14,
         fontSize: 14,
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         fontWeight: '500',
         marginBottom: 14,
     },
@@ -252,10 +302,10 @@ const styles = StyleSheet.create({
         letterSpacing: 6,
         textAlign: 'center',
         fontWeight: 'bold',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
     },
     submitButton: {
-        backgroundColor: '#4A2E19',
+        backgroundColor: COLORS.primary,
         paddingVertical: 16,
         borderRadius: 16,
         alignItems: 'center',
@@ -263,7 +313,7 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     submitText: {
-        color: '#FFF8F0',
+        color: COLORS.textLight,
         fontSize: 15,
         fontWeight: '700',
     },
@@ -272,11 +322,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     linkText: {
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         fontSize: 13,
     },
     linkBold: {
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         fontWeight: '700',
     },
 });

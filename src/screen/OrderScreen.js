@@ -8,6 +8,7 @@ import {
     Linking,
     Alert
 } from 'react-native';
+import { COLORS } from '../constants/theme';
 
 export default function OrderScreen() {
     const activeSalesList = [
@@ -142,7 +143,7 @@ export default function OrderScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFF8F0',
+        backgroundColor: COLORS.background,
     },
     scrollContent: {
         paddingHorizontal: 20,
@@ -155,36 +156,36 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 22,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 4,
     },
     headerSubtitle: {
         fontSize: 13,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         lineHeight: 18,
     },
     sectionTitle: {
         fontSize: 16,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 12,
     },
     salesCardPrimary: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 20,
         padding: 18,
         marginBottom: 14,
         borderWidth: 2,
-        borderColor: '#D4A373',
+        borderColor: COLORS.primary,
         elevation: 3,
     },
     salesCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 20,
         padding: 18,
         marginBottom: 14,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
         elevation: 2,
     },
     salesHeader: {
@@ -200,49 +201,49 @@ const styles = StyleSheet.create({
     salesName: {
         fontSize: 16,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
     },
     salesLocation: {
         fontSize: 12,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         marginTop: 2,
     },
     statusBadge: {
-        backgroundColor: '#FAF5EF',
+        backgroundColor: COLORS.inputBg,
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
     },
     statusBadgeText: {
         fontSize: 10,
         fontWeight: '700',
-        color: '#D4A373',
+        color: COLORS.textPrimary,
     },
     mapsButton: {
-        backgroundColor: '#FAF5EF',
+        backgroundColor: COLORS.inputBg,
         borderWidth: 1,
-        borderColor: '#D4A373',
+        borderColor: COLORS.border,
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 12,
         alignItems: 'center',
     },
     mapsButtonText: {
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         fontSize: 12,
         fontWeight: '700',
     },
     divider: {
         height: 1,
-        backgroundColor: '#EFE5DA',
+        backgroundColor: COLORS.border,
         marginVertical: 12,
     },
     stockTitle: {
         fontSize: 12,
         fontWeight: '700',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 8,
     },
     stockGrid: {
@@ -255,12 +256,12 @@ const styles = StyleSheet.create({
     },
     stockDrinkName: {
         fontSize: 13,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
     },
     stockCount: {
         fontSize: 13,
         fontWeight: '700',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
     },
     stockEmpty: {
         fontSize: 13,
@@ -268,11 +269,11 @@ const styles = StyleSheet.create({
         color: '#E53E3E',
     },
     orderHistoryCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 20,
         padding: 18,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
         elevation: 2,
     },
     orderHistoryHeader: {
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
     },
     orderDate: {
         fontSize: 12,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
     },
     orderStatusBadge: {
         fontSize: 11,
@@ -292,17 +293,17 @@ const styles = StyleSheet.create({
     },
     orderSales: {
         fontSize: 13,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         marginBottom: 2,
     },
     orderSalesBold: {
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         fontWeight: '700',
     },
     orderItems: {
         fontSize: 14,
         fontWeight: '700',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
     },
     orderTotalRow: {
         flexDirection: 'row',
@@ -311,21 +312,21 @@ const styles = StyleSheet.create({
     },
     orderTotalLabel: {
         fontSize: 13,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
     },
     orderTotalValue: {
         fontSize: 15,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
     },
     emptyCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         padding: 20,
         borderRadius: 16,
         alignItems: 'center',
     },
     emptyText: {
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         fontSize: 13,
     },
 });

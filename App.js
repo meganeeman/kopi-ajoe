@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet, Alert } from 'react-native';
-import * as Updates from 'expo-updates';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { supabase } from './supabase';
 import LoginScreen from './src/screen/LoginScreen';
 import RegisterScreen from './src/screen/RegisterScreen';
 import HomeScreen from './src/screen/HomeScreen';
+import { COLORS } from './src/constants/theme';
 
 export default function App() {
   const [userSession, setUserSession] = useState(null);
@@ -12,8 +12,6 @@ export default function App() {
   const [isRegistering, setIsRegistering] = useState(false);
 
   useEffect(() => {
-    onFetchUpdateAsync();
-
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         fetchUserProfile(session.user);
@@ -35,29 +33,6 @@ export default function App() {
       authListener?.subscription?.unsubscribe();
     };
   }, []);
-
-  const onFetchUpdateAsync = async () => {
-    try {
-      const update = await Updates.checkForUpdateAsync();
-      if (update.isAvailable) {
-        await Updates.fetchUpdateAsync();
-        Alert.alert(
-          'Update Tersedia!',
-          'Aplikasi berhasil diperbarui. Memuat ulang aplikasi...',
-          [
-            {
-              text: 'OK',
-              onPress: async () => {
-                await Updates.reloadAsync();
-              },
-            },
-          ]
-        );
-      }
-    } catch (error) {
-      console.log('Update Error:', error);
-    }
-  };
 
   const fetchUserProfile = async (authUser) => {
     try {
@@ -90,7 +65,7 @@ export default function App() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4A2E19" />
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
@@ -123,12 +98,12 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: COLORS.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFF8F0',
+    backgroundColor: COLORS.background,
   },
 });

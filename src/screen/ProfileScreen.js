@@ -7,12 +7,13 @@ import {
     ScrollView
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import { COLORS } from '../constants/theme';
 
 export default function ProfileScreen({ userSession }) {
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
 
-    const APP_VERSION = 'v0.0.3';
+    const APP_VERSION = 'v0.0.4';
 
     const handleMenuPress = (menuName) => {
         setToastMessage(`✨ Fitur ${menuName} (TBD) akan segera hadir! ✨`);
@@ -60,7 +61,7 @@ export default function ProfileScreen({ userSession }) {
                         <QRCode
                             value={qrData || 'UNKNOWN_USER'}
                             size={160}
-                            color="#4A2E19"
+                            color={COLORS.primary}
                             backgroundColor="#FFFFFF"
                         />
                     </View>
@@ -111,13 +112,13 @@ export default function ProfileScreen({ userSession }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFF8F0',
+        backgroundColor: COLORS.background,
     },
     toastContainer: {
         position: 'absolute',
         top: 10,
         alignSelf: 'center',
-        backgroundColor: '#4A2E19',
+        backgroundColor: COLORS.toastBg,
         paddingHorizontal: 20,
         paddingVertical: 12,
         borderRadius: 25,
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
         zIndex: 999,
     },
     toastText: {
-        color: '#FFF8F0',
+        color: COLORS.toastText,
         fontSize: 13,
         fontWeight: '700',
         textAlign: 'center',
@@ -140,22 +141,20 @@ const styles = StyleSheet.create({
         paddingBottom: 130,
     },
     headerCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 24,
         padding: 24,
         alignItems: 'center',
         marginBottom: 16,
         elevation: 3,
-        shadowColor: '#4A2E19',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
+        borderWidth: 1,
+        borderColor: COLORS.border,
     },
     avatarCircle: {
         width: 70,
         height: 70,
         borderRadius: 35,
-        backgroundColor: '#4A2E19',
+        backgroundColor: COLORS.primary,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 12,
@@ -163,53 +162,53 @@ const styles = StyleSheet.create({
     avatarText: {
         fontSize: 28,
         fontWeight: '800',
-        color: '#FFF8F0',
+        color: COLORS.textLight,
     },
     nameText: {
         fontSize: 20,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 2,
     },
     usernameText: {
         fontSize: 14,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         fontWeight: '500',
         marginBottom: 10,
     },
     badgeContainer: {
-        backgroundColor: '#FAF5EF',
+        backgroundColor: COLORS.inputBg,
         paddingHorizontal: 12,
         paddingVertical: 4,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
     },
     badgeText: {
         fontSize: 10,
         fontWeight: '800',
-        color: '#D4A373',
+        color: COLORS.textPrimary,
         letterSpacing: 1,
     },
     qrCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 24,
         padding: 20,
         alignItems: 'center',
         marginBottom: 16,
-        borderWidth: 1.5,
-        borderColor: '#EFE5DA',
+        borderWidth: 1,
+        borderColor: COLORS.border,
         elevation: 2,
     },
     qrTitle: {
         fontSize: 16,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 4,
     },
     qrSubtitle: {
         fontSize: 12,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         textAlign: 'center',
         marginBottom: 16,
     },
@@ -218,26 +217,28 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
         marginBottom: 10,
     },
     qrCodeText: {
         fontSize: 12,
         fontWeight: '700',
-        color: '#D4A373',
+        color: COLORS.textPrimary,
         letterSpacing: 1,
     },
     infoCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 20,
         padding: 20,
         marginBottom: 16,
         elevation: 2,
+        borderWidth: 1,
+        borderColor: COLORS.border,
     },
     sectionTitle: {
         fontSize: 15,
         fontWeight: '800',
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         marginBottom: 14,
     },
     infoRow: {
@@ -248,30 +249,32 @@ const styles = StyleSheet.create({
     },
     infoLabel: {
         fontSize: 13,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         fontWeight: '500',
     },
     infoValue: {
         fontSize: 13,
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         fontWeight: '700',
     },
     infoValueHighlight: {
         fontSize: 14,
-        color: '#D4A373',
+        color: COLORS.textPrimary,
         fontWeight: '800',
     },
     divider: {
         height: 1,
-        backgroundColor: '#EFE5DA',
+        backgroundColor: COLORS.border,
         marginVertical: 10,
     },
     menuCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 20,
         padding: 20,
         marginBottom: 16,
         elevation: 2,
+        borderWidth: 1,
+        borderColor: COLORS.border,
     },
     menuItem: {
         flexDirection: 'row',
@@ -281,12 +284,12 @@ const styles = StyleSheet.create({
     },
     menuText: {
         fontSize: 14,
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         fontWeight: '600',
     },
     arrowText: {
         fontSize: 16,
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         fontWeight: '700',
     },
     versionContainer: {
@@ -296,7 +299,7 @@ const styles = StyleSheet.create({
     versionText: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         opacity: 0.7,
     },
 });
