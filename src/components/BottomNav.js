@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native';
+import { COLORS } from '../constants/theme';
 
 export default function BottomNav({ activeTab, setActiveTab }) {
     const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
 
-    const handleRewardsPress = () => {
+    const triggerToast = (msg) => {
+        setToastMessage(msg);
         setShowToast(true);
         setTimeout(() => {
             setShowToast(false);
         }, 2500);
     };
 
+    const handleCameraPress = () => {
+        triggerToast('📷 Fitur Scan QR TBA ya!');
+    };
+
+    const handleRewardsPress = () => {
+        triggerToast('🎁 Fitur Rewards akan segera hadir!');
+    };
+
     return (
         <View style={styles.bottomNavWrapper}>
             {showToast && (
                 <View style={styles.toastContainer}>
-                    <Text style={styles.toastText}>🎁 Fitur Rewards akan segera hadir!</Text>
+                    <Text style={styles.toastText}>{toastMessage}</Text>
                 </View>
             )}
 
@@ -44,7 +55,7 @@ export default function BottomNav({ activeTab, setActiveTab }) {
                     <TouchableOpacity
                         style={styles.cameraButton}
                         activeOpacity={0.85}
-                        onPress={() => setActiveTab('profile')}
+                        onPress={handleCameraPress}
                     >
                         <Text style={styles.cameraIcon}>📷</Text>
                     </TouchableOpacity>
@@ -75,7 +86,7 @@ export default function BottomNav({ activeTab, setActiveTab }) {
 const styles = StyleSheet.create({
     bottomNavWrapper: {
         position: 'absolute',
-        bottom: 45,
+        bottom: 35,
         left: 0,
         right: 0,
         alignItems: 'center',
@@ -84,36 +95,37 @@ const styles = StyleSheet.create({
     toastContainer: {
         position: 'absolute',
         top: -50,
-        backgroundColor: '#4A2E19',
+        backgroundColor: COLORS.toastBg,
         paddingHorizontal: 18,
         paddingVertical: 10,
         borderRadius: 20,
-        elevation: 6,
+        elevation: 8,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 6,
+        zIndex: 9999,
     },
     toastText: {
-        color: '#FFF8F0',
+        color: COLORS.toastText,
         fontSize: 12,
         fontWeight: '700',
     },
     bottomNavContainer: {
         flexDirection: 'row',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLORS.card,
         borderRadius: 30,
         height: 65,
         width: '100%',
         alignItems: 'center',
         justifyContent: 'space-around',
         elevation: 10,
-        shadowColor: '#4A2E19',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.12,
         shadowRadius: 10,
         borderWidth: 1,
-        borderColor: '#EFE5DA',
+        borderColor: COLORS.border,
     },
     navItem: {
         alignItems: 'center',
@@ -122,7 +134,7 @@ const styles = StyleSheet.create({
     },
     navIcon: {
         fontSize: 18,
-        opacity: 0.5,
+        opacity: 0.4,
     },
     navIconActive: {
         opacity: 1,
@@ -130,11 +142,11 @@ const styles = StyleSheet.create({
     navLabel: {
         fontSize: 11,
         fontWeight: '600',
-        color: '#8C705F',
+        color: COLORS.textSecondary,
         marginTop: 2,
     },
     navLabelActive: {
-        color: '#4A2E19',
+        color: COLORS.textPrimary,
         fontWeight: '800',
     },
     cameraButtonPlaceholder: {
@@ -148,13 +160,13 @@ const styles = StyleSheet.create({
         width: 56,
         height: 56,
         borderRadius: 28,
-        backgroundColor: '#4A2E19',
+        backgroundColor: COLORS.primary,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 3,
-        borderColor: '#FFF8F0',
+        borderColor: COLORS.background,
         elevation: 8,
-        shadowColor: '#4A2E19',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 6,

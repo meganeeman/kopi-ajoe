@@ -139,14 +139,18 @@ export default function HomeScreen({ userSession, onLogout }) {
 
                         <View style={styles.loyaltyCard}>
                             <View style={styles.loyaltyHeader}>
-                                <View>
+                                <View style={styles.loyaltyTextInfo}>
                                     <Text style={styles.starCount}>
                                         {userSession?.loyalty_points || 0} <Text style={styles.starUnit}>Stars</Text>
                                     </Text>
                                     <Text style={styles.starSubtitle}>Tingkatkan poin buat dapet Kopi Gratis!</Text>
                                 </View>
-                                <TouchableOpacity style={styles.scanButton} onPress={() => setActiveTab('profile')}>
-                                    <Text style={styles.scanButtonText}>Buka QR</Text>
+                                <TouchableOpacity 
+                                    style={styles.qrIconButton} 
+                                    activeOpacity={0.8}
+                                    onPress={() => setActiveTab('profile')}
+                                >
+                                    <Text style={styles.qrIconText}>QR</Text>
                                 </TouchableOpacity>
                             </View>
 
@@ -299,6 +303,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 16,
     },
+    loyaltyTextInfo: {
+        flex: 1,
+        paddingRight: 12,
+    },
     starCount: {
         fontSize: 26,
         fontWeight: '800',
@@ -314,16 +322,20 @@ const styles = StyleSheet.create({
         color: '#CCCCCC',
         marginTop: 2,
     },
-    scanButton: {
-        backgroundColor: COLORS.card,
-        paddingHorizontal: 16,
-        paddingVertical: 10,
+    qrIconButton: {
+        width: 44,
+        height: 44,
         borderRadius: 14,
+        backgroundColor: COLORS.card,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 2,
     },
-    scanButtonText: {
-        color: COLORS.textPrimary,
+    qrIconText: {
+        fontSize: 14,
         fontWeight: '800',
-        fontSize: 13,
+        color: COLORS.textPrimary,
+        letterSpacing: 0.5,
     },
     progressTrack: {
         height: 8,
