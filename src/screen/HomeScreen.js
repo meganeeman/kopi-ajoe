@@ -153,7 +153,7 @@ export default function HomeScreen({ userSession, onLogout }) {
                             </View>
                             <View style={styles.progressLabels}>
                                 <Text style={styles.progressText}>0 Stars</Text>
-                                <Text style={styles.progressText}>10 Stars (Free Coffee)</Text>
+                                <Text style={styles.progressText}>300 Stars (Free Coffee)</Text>
                             </View>
                         </View>
 
