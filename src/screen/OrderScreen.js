@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { supabase } from '../../config/supabase';
+import { supabase } from '../../supabase';
 import { COLORS } from '../constants/theme';
 
 export default function OrderScreen() {
