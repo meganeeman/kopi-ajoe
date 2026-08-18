@@ -23,7 +23,16 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFF8F0"
       },
-      "package": "com.kopiajoe.app"
+      "package": "com.kopiajoe.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCC87ALNQRXFzHrxy2sEAX5qhUVZ3hY-UM"
+        }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     },
     "extra": {
       "eas": {
