@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     ScrollView,
     Image,
-    SafeAreaView,
     StatusBar,
     Platform,
     Modal
@@ -16,6 +15,7 @@ import BottomNav from '../components/BottomNav';
 import ProfileScreen from './ProfileScreen';
 import OrderScreen from './OrderScreen';
 import { COLORS } from '../constants/theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen({ userSession, onLogout }) {
     const [activeTab, setActiveTab] = useState('home');
