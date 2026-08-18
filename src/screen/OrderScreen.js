@@ -261,7 +261,6 @@ export default function OrderScreen() {
                 <View style={styles.mapCardContainer}>
                     <MapView
                         style={styles.map}
-                        provider={PROVIDER_GOOGLE}
                         initialRegion={defaultRegion}
                         showsUserLocation
                         showsMyLocationButton
