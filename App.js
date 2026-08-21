@@ -12,31 +12,45 @@ export default function App() {
   const [isRegistering, setIsRegistering] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        fetchUserProfile(session.user);
-      } else {
-        setLoading(false);
+    let mounted = true;
+
+    const checkInitialSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user && mounted) {
+          await fetchUserProfile(session.user);
+        } else if (mounted) {
+          setLoading(false);
+        }
+      } catch (e) {
+        if (mounted) setLoading(false);
       }
-    });
+    };
+
+    checkInitialSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        fetchUserProfile(session.user);
-      } else {
-        setUserSession(null);
-        setLoading(false);
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session?.user && mounted) {
+          await fetchUserProfile(session.user);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        if (mounted) {
+          setUserSession(null);
+          setLoading(false);
+        }
       }
     });
 
     return () => {
+      mounted = false;
       authListener?.subscription?.unsubscribe();
     };
   }, []);
 
   const fetchUserProfile = async (authUser) => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('users')
         .select('*')
         .eq('id', authUser.id)

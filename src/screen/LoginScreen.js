@@ -90,10 +90,16 @@ export default function LoginScreen({ onLoginSuccess, onNavigateToRegister }) {
                 return;
             }
 
-            await supabase.auth.signInWithPassword({
+            const { data: authData, error: authErr } = await supabase.auth.signInWithPassword({
                 email: userData.email,
                 password: passClean,
             });
+
+            if (authErr) {
+                Alert.alert('Gagal Auth', authErr.message);
+                setLoading(false);
+                return;
+            }
 
             onLoginSuccess(userData);
         } catch (err) {

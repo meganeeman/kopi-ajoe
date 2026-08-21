@@ -12,7 +12,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { supabase } from '../../supabase';
 import { COLORS } from '../constants/theme';
 
@@ -27,7 +27,25 @@ export default function OrderScreen() {
     const [stockModalVisible, setStockModalVisible] = useState(false);
 
     useEffect(() => {
-        fetchData();
+        let isMounted = true;
+
+        const initData = async () => {
+            setLoading(true);
+            const loc = await getUserLocation();
+            if (isMounted) {
+                await Promise.all([fetchActiveSales(loc), fetchRecentOrders()]);
+                setLoading(false);
+                setRefreshing(false);
+            }
+        };
+
+        initData();
+
+        const timer = setInterval(() => {
+            if (isMounted) {
+                fetchActiveSales(userLocation);
+            }
+        }, 15000);
 
         const subscription = supabase
             .channel('public:cart_units')
@@ -35,20 +53,22 @@ export default function OrderScreen() {
                 'postgres_changes',
                 { event: '*', schema: 'public', table: 'cart_units' },
                 () => {
-                    fetchActiveSales();
+                    if (isMounted) fetchActiveSales(userLocation);
                 }
             )
             .subscribe();
 
         return () => {
+            isMounted = false;
+            clearInterval(timer);
             supabase.removeChannel(subscription);
         };
     }, []);
 
     const fetchData = async () => {
-        setLoading(true);
-        await Promise.all([getUserLocation(), fetchActiveSales(), fetchRecentOrders()]);
-        setLoading(false);
+        setRefreshing(true);
+        const loc = await getUserLocation();
+        await Promise.all([fetchActiveSales(loc), fetchRecentOrders()]);
         setRefreshing(false);
     };
 
@@ -59,32 +79,31 @@ export default function OrderScreen() {
                 const loc = await Location.getCurrentPositionAsync({
                     accuracy: Location.Accuracy.High,
                 });
-                setUserLocation({
+                const locData = {
                     latitude: loc.coords.latitude,
                     longitude: loc.coords.longitude,
                     latitudeDelta: 0.015,
                     longitudeDelta: 0.015,
-                });
+                };
+                setUserLocation(locData);
+                return locData;
             }
         } catch (err) {
             console.log('Error get location:', err);
         }
+        return userLocation;
     };
 
-    const fetchActiveSales = async () => {
+    const fetchActiveSales = async (currentLoc = userLocation) => {
         try {
+            const uLat = currentLoc?.latitude || -0.2292;
+            const uLng = currentLoc?.longitude || 100.6308;
+
             const { data: units, error } = await supabase
-                .from('cart_units')
-                .select(`
-                    id,
-                    unit_name,
-                    vehicle_type,
-                    latitude,
-                    longitude,
-                    is_open,
-                    active_sales_id
-                `)
-                .eq('is_open', true);
+                .rpc('get_nearby_carts', {
+                    user_lat: uLat,
+                    user_lng: uLng,
+                });
 
             if (error) throw error;
 
@@ -118,14 +137,17 @@ export default function OrderScreen() {
                             ready: s.quantity || 0,
                         }));
 
+                        const distKm = parseFloat(unit.distance_km) || 0;
+
                         return {
                             id: unit.id,
                             name: salesName,
                             location: `Gerobak ${unit.vehicle_type === 'sepeda' ? 'Sepeda' : 'Motor'}`,
-                            latitude: parseFloat(unit.latitude) || -0.2292,
-                            longitude: parseFloat(unit.longitude) || 100.6308,
+                            latitude: parseFloat(unit.latitude) || uLat,
+                            longitude: parseFloat(unit.longitude) || uLng,
                             status: 'Lapak Buka / Ready',
                             stock: formattedStocks,
+                            distanceText: distKm > 0 ? `${distKm.toFixed(1)} km` : 'Dekat',
                         };
                     })
                 );
@@ -223,7 +245,6 @@ export default function OrderScreen() {
     };
 
     const onRefresh = () => {
-        setRefreshing(true);
         fetchData();
     };
 
@@ -273,7 +294,7 @@ export default function OrderScreen() {
                                     longitude: sales.longitude,
                                 }}
                                 title={sales.name}
-                                description="Sentuh untuk lihat stok ready"
+                                description={`Jarak: ${sales.distanceText} - Sentuh untuk lihat stok`}
                                 onPress={() => handleMarkerPress(sales)}
                             />
                         ))}
@@ -285,7 +306,7 @@ export default function OrderScreen() {
                     </View>
                 </View>
 
-                <Text style={styles.sectionTitle}>Daftar Gerobak Buka 🔥</Text>
+                <Text style={styles.sectionTitle}>Daftar Gerobak Terdekat 🔥</Text>
 
                 {activeSalesList.length > 0 ? (
                     activeSalesList.map((sales) => (
@@ -298,7 +319,9 @@ export default function OrderScreen() {
                             <View style={styles.salesHeader}>
                                 <View style={styles.salesInfoLeft}>
                                     <Text style={styles.salesName}>{sales.name}</Text>
-                                    <Text style={styles.salesLocation}>{sales.location}</Text>
+                                    <Text style={styles.salesLocation}>
+                                        {sales.location} • {sales.distanceText}
+                                    </Text>
                                 </View>
                                 <View style={styles.statusBadge}>
                                     <Text style={styles.statusBadgeText}>Lihat Stok ›</Text>
@@ -357,7 +380,9 @@ export default function OrderScreen() {
                                 <View style={styles.modalHeader}>
                                     <View>
                                         <Text style={styles.modalSalesName}>{selectedSales.name}</Text>
-                                        <Text style={styles.modalSalesLocation}>{selectedSales.location}</Text>
+                                        <Text style={styles.modalSalesLocation}>
+                                            {selectedSales.location} ({selectedSales.distanceText})
+                                        </Text>
                                     </View>
                                     <View style={styles.statusBadgeActive}>
                                         <Text style={styles.statusBadgeActiveText}>Buka Lapak</Text>
