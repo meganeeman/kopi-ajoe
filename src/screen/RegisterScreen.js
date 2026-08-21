@@ -113,10 +113,27 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
         setLoading(true);
 
         try {
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email: cleanEmail,
+                password: cleanPassword,
+                options: {
+                    data: {
+                        name: cleanName,
+                        username: cleanUsername,
+                        phone_number: cleanPhone,
+                    }
+                }
+            });
+
+            if (authError) throw authError;
+
+            const authUserId = authData.user?.id;
+
             const { data: newUser, error: createError } = await supabase
                 .from('users')
                 .insert([
                     {
+                        id: authUserId,
                         email: cleanEmail,
                         name: cleanName,
                         username: cleanUsername,
