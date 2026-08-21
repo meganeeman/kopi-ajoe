@@ -129,7 +129,7 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
 
             const authUserId = authData.user?.id;
 
-            const { data: newUser, error: createError } = await supabase
+            const { error: createError } = await supabase
                 .from('users')
                 .insert([
                     {
@@ -142,14 +142,20 @@ export default function RegisterScreen({ onRegisterSuccess, goToLogin }) {
                         role: 'customer',
                         loyalty_points: 0,
                     },
-                ])
-                .select()
-                .single();
+                ]);
 
             if (createError) throw createError;
 
-            Alert.alert('Berhasil!', 'Akun kamu berhasil dibuat! Silakan login.');
-            onRegisterSuccess(newUser);
+            Alert.alert(
+                'Pendaftaran Berhasil!',
+                'Silakan cek email kamu dan klik link konfirmasi untuk mengaktifkan akun sebelum login ya!',
+                [
+                    {
+                        text: 'Mengerti, Login Sekarang',
+                        onPress: () => goToLogin(),
+                    },
+                ]
+            );
         } catch (err) {
             Alert.alert('Gagal Verifikasi', err.message || 'Terjadi kesalahan saat membuat akun.');
         } finally {
